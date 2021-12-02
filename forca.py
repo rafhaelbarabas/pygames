@@ -15,6 +15,10 @@ def print_answer(answer):
     print("Palavra-chave: ", "".join(answer.values()))
 
 
+def print_letters(letters):
+    print("Letras já informadas: " + ", ".join(letters))
+
+
 def jogar():
     print("***************************")
     print("* PyGames - Jogo da Forca *")
@@ -47,22 +51,27 @@ def jogar():
     max_tries = 6
     answer = {}
     word_length = len(str(key_word))
-    word_template = {}
+    letters_template = {}
+    already_input = []
 
     for i in range(0, word_length):
-        word_template[i] = "{}".format(key_word[i])
+        letters_template[i] = "{}".format(key_word[i])
         answer[i] = " _ "
 
     print_gibbet(gibbet_dic)
     print_answer(answer)
 
     while True:
-        user_word = str.upper(input("Informe uma letra: "))
-        template_values = word_template.values()
-        if user_word in template_values:
+        user_letter = str.upper(input("Informe uma letra: "))
+        template_values = letters_template.values()
+        if user_letter in already_input:
+            print("A letra {} já foi informada, tente outra...".format(user_letter))
+            print_letters(already_input)
+            continue
+        if user_letter in template_values:
             for i in range(0, len(template_values)):
-                if word_template[i] == user_word:
-                    answer[i] = user_word
+                if letters_template[i] == user_letter:
+                    answer[i] = user_letter
         else:
             try_count = try_count + 1
             if try_count > max_tries:
@@ -70,8 +79,10 @@ def jogar():
                 print("As tentativas acabaram, a palavra era: ", key_word)
                 break
             gibbet_dic[try_count] = try_dic[try_count]
+        already_input.append(user_letter)
         print_gibbet(gibbet_dic)
         print_answer(answer)
+        print_letters(already_input)
 
         if "".join(answer.values()) == key_word:
             print("Você encontrou a palavra!")
@@ -82,10 +93,8 @@ if __name__ == "__main__":
     jogar()
 
 # TODO List
-# 1 - Implementar uma lista que guarde as letras digitadas pelo usuário e imprima junto da palavra chave.
-#   - Caso o usuário informar uma letra já digitada, apenas exibir uma mensagem e não considerar como um erro na forca.
-# 2 - Validar palavras com espaços em branco e outros caracteres especiais e já inseri-los na resposta para facilitar.
-# 3 - Validar entrada do usuário, caso ele digite mais de uma letra.
+# Validar palavras com espaços em branco e outros caracteres especiais e já inseri-los na resposta para facilitar.
+# Validar entrada do usuário, caso ele digite mais de uma letra.
 # considerar acerto uma sequencia de palavras ou a palavra inteira.
 # Por exemplo - Palavra-chave = notebook
 # Se o usuário digitar "not", deve preencher "N O T _ _ _ _ _"
